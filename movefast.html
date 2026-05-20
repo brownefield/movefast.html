@@ -1,0 +1,993 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>MoveFast Hawaii — On-Demand Moving Help</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --black: #0a0a0a;
+    --white: #f5f0e8;
+    --orange: #e85d04;
+    --orange-dark: #c24d00;
+    --gray: #1c1c1c;
+    --gray-mid: #2e2e2e;
+    --gray-light: #555;
+    --cream: #f5f0e8;
+    --font-display: 'Bebas Neue', sans-serif;
+    --font-body: 'DM Sans', sans-serif;
+    --font-mono: 'DM Mono', monospace;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* ─── NOISE OVERLAY ─── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.4;
+  }
+
+  /* ─── HEADER ─── */
+  header {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 40px;
+    background: rgba(10,10,10,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid #1e1e1e;
+  }
+
+  .logo {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    letter-spacing: 0.04em;
+    color: var(--white);
+  }
+
+  .logo span { color: var(--orange); }
+
+  nav { display: flex; gap: 28px; align-items: center; }
+
+  nav a {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #888;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  nav a:hover { color: var(--white); }
+
+  .nav-cta {
+    background: var(--orange);
+    color: var(--black) !important;
+    padding: 9px 20px;
+    font-weight: 600 !important;
+    font-family: var(--font-mono) !important;
+  }
+
+  .nav-cta:hover { background: var(--orange-dark); }
+
+  /* ─── HERO ─── */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 120px 40px 80px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-bg-text {
+    position: absolute;
+    top: 50%;
+    left: -20px;
+    transform: translateY(-50%);
+    font-family: var(--font-display);
+    font-size: clamp(140px, 22vw, 340px);
+    color: #141414;
+    white-space: nowrap;
+    pointer-events: none;
+    user-select: none;
+    z-index: 0;
+    line-height: 1;
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 1;
+    max-width: 860px;
+  }
+
+  .hero-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .hero-eyebrow::before {
+    content: '';
+    display: block;
+    width: 32px;
+    height: 1px;
+    background: var(--orange);
+  }
+
+  h1 {
+    font-family: var(--font-display);
+    font-size: clamp(64px, 9vw, 130px);
+    line-height: 0.92;
+    letter-spacing: 0.02em;
+    margin-bottom: 32px;
+  }
+
+  h1 .accent { color: var(--orange); }
+
+  .hero-sub {
+    font-size: 1.15rem;
+    color: #aaa;
+    max-width: 520px;
+    line-height: 1.65;
+    margin-bottom: 48px;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .btn-primary {
+    background: var(--orange);
+    color: var(--black);
+    padding: 16px 36px;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.15s;
+    display: inline-block;
+  }
+
+  .btn-primary:hover { background: var(--orange-dark); transform: translateY(-1px); }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--white);
+    padding: 16px 36px;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border: 1px solid #333;
+    cursor: pointer;
+    transition: border-color 0.2s, color 0.2s;
+    display: inline-block;
+  }
+
+  .btn-secondary:hover { border-color: #666; color: var(--white); }
+
+  /* ─── STATS BAR ─── */
+  .stats-bar {
+    border-top: 1px solid #1e1e1e;
+    border-bottom: 1px solid #1e1e1e;
+    display: flex;
+    background: var(--gray);
+  }
+
+  .stat {
+    flex: 1;
+    padding: 28px 40px;
+    border-right: 1px solid #1e1e1e;
+    text-align: center;
+  }
+
+  .stat:last-child { border-right: none; }
+
+  .stat-num {
+    font-family: var(--font-display);
+    font-size: 2.4rem;
+    color: var(--orange);
+    letter-spacing: 0.04em;
+  }
+
+  .stat-label {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #666;
+    margin-top: 4px;
+  }
+
+  /* ─── SECTION SHARED ─── */
+  section {
+    position: relative;
+    z-index: 1;
+  }
+
+  .section-label {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 16px;
+  }
+
+  .section-title {
+    font-family: var(--font-display);
+    font-size: clamp(40px, 5vw, 70px);
+    line-height: 0.95;
+    letter-spacing: 0.02em;
+    margin-bottom: 20px;
+  }
+
+  /* ─── HOW IT WORKS ─── */
+  .how {
+    padding: 100px 40px;
+    background: var(--black);
+  }
+
+  .how-inner { max-width: 1100px; margin: 0 auto; }
+
+  .how-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1px;
+    background: #1e1e1e;
+    border: 1px solid #1e1e1e;
+    margin-top: 60px;
+  }
+
+  .how-card {
+    background: var(--black);
+    padding: 40px 32px;
+    position: relative;
+  }
+
+  .how-num {
+    font-family: var(--font-display);
+    font-size: 4rem;
+    color: #1e1e1e;
+    line-height: 1;
+    margin-bottom: 16px;
+  }
+
+  .how-card h3 {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 10px;
+  }
+
+  .how-card p {
+    font-size: 0.9rem;
+    color: #888;
+    line-height: 1.6;
+  }
+
+  /* ─── PRICING ─── */
+  .pricing {
+    padding: 100px 40px;
+    background: var(--gray);
+    border-top: 1px solid #1e1e1e;
+  }
+
+  .pricing-inner { max-width: 900px; margin: 0 auto; }
+
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1px;
+    background: #222;
+    margin-top: 60px;
+    border: 1px solid #222;
+  }
+
+  .price-card {
+    background: var(--gray);
+    padding: 36px 28px;
+  }
+
+  .price-card.featured {
+    background: var(--orange);
+    color: var(--black);
+  }
+
+  .price-card.featured .price-type,
+  .price-card.featured .price-range,
+  .price-card.featured .price-desc { color: var(--black); }
+
+  .price-type {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #777;
+    margin-bottom: 12px;
+  }
+
+  .price-range {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    letter-spacing: 0.04em;
+    margin-bottom: 8px;
+    color: var(--white);
+  }
+
+  .price-desc {
+    font-size: 0.82rem;
+    color: #888;
+    line-height: 1.5;
+  }
+
+  /* ─── FORMS ─── */
+  .forms-section {
+    padding: 100px 40px;
+    background: var(--black);
+    border-top: 1px solid #1e1e1e;
+  }
+
+  .forms-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+  }
+
+  .form-block {
+    background: var(--gray);
+    border: 1px solid #252525;
+    padding: 48px 40px;
+  }
+
+  .form-block.mover-block {
+    border-color: var(--orange);
+    border-width: 1px;
+  }
+
+  .form-header {
+    margin-bottom: 36px;
+  }
+
+  .form-tag {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    padding: 5px 12px;
+    margin-bottom: 16px;
+    display: inline-block;
+  }
+
+  .form-tag.customer { background: #1e1e1e; color: #888; }
+  .form-tag.mover { background: var(--orange); color: var(--black); }
+
+  .form-block h2 {
+    font-family: var(--font-display);
+    font-size: 2.4rem;
+    letter-spacing: 0.03em;
+    line-height: 1;
+    margin-bottom: 10px;
+  }
+
+  .form-block p {
+    font-size: 0.88rem;
+    color: #888;
+    line-height: 1.6;
+  }
+
+  .form-group { margin-bottom: 20px; }
+
+  label {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #666;
+    margin-bottom: 8px;
+  }
+
+  input, select, textarea {
+    width: 100%;
+    background: var(--black);
+    border: 1px solid #282828;
+    color: var(--white);
+    padding: 13px 16px;
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color 0.2s;
+    -webkit-appearance: none;
+  }
+
+  input:focus, select:focus, textarea:focus {
+    border-color: var(--orange);
+  }
+
+  select option { background: var(--gray); }
+
+  textarea { resize: vertical; min-height: 88px; }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--font-body);
+    font-size: 0.88rem;
+    color: #aaa;
+    text-transform: none;
+    letter-spacing: 0;
+    cursor: pointer;
+  }
+
+  .checkbox-label input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    min-width: 16px;
+    padding: 0;
+    accent-color: var(--orange);
+  }
+
+  .submit-btn {
+    width: 100%;
+    background: var(--orange);
+    color: var(--black);
+    padding: 16px;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    border: none;
+    cursor: pointer;
+    margin-top: 8px;
+    transition: background 0.2s, transform 0.15s;
+  }
+
+  .submit-btn:hover { background: var(--orange-dark); transform: translateY(-1px); }
+
+  .mover-block .submit-btn {
+    background: transparent;
+    color: var(--orange);
+    border: 1px solid var(--orange);
+  }
+
+  .mover-block .submit-btn:hover { background: var(--orange); color: var(--black); }
+
+  /* ─── SUCCESS STATE ─── */
+  .success-msg {
+    display: none;
+    text-align: center;
+    padding: 40px 20px;
+  }
+
+  .success-msg.visible { display: block; }
+
+  .success-icon {
+    font-size: 2.5rem;
+    margin-bottom: 16px;
+  }
+
+  .success-msg h3 {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    letter-spacing: 0.04em;
+    margin-bottom: 10px;
+  }
+
+  .success-msg p { font-size: 0.9rem; color: #888; }
+
+  /* ─── FOOTER ─── */
+  footer {
+    border-top: 1px solid #1a1a1a;
+    padding: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--black);
+  }
+
+  .footer-logo {
+    font-family: var(--font-display);
+    font-size: 1.4rem;
+    letter-spacing: 0.04em;
+  }
+
+  .footer-logo span { color: var(--orange); }
+
+  .footer-text {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #444;
+  }
+
+  .footer-sub {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    color: #333;
+    margin-top: 6px;
+  }
+
+  /* ─── TICKER ─── */
+  .ticker {
+    background: var(--orange);
+    color: var(--black);
+    overflow: hidden;
+    white-space: nowrap;
+    padding: 10px 0;
+  }
+
+  .ticker-inner {
+    display: inline-block;
+    animation: ticker 22s linear infinite;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+
+  @keyframes ticker {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  /* ─── SCROLL ANIMATIONS ─── */
+  .fade-up {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .fade-up.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 860px) {
+    header { padding: 16px 20px; }
+    nav a:not(.nav-cta) { display: none; }
+    .hero { padding: 100px 20px 60px; }
+    h1 { font-size: clamp(52px, 13vw, 80px); }
+    .stat { padding: 20px 16px; }
+    .stat-num { font-size: 1.8rem; }
+    .how, .pricing, .forms-section { padding: 70px 20px; }
+    .forms-inner { grid-template-columns: 1fr; gap: 32px; }
+    .form-block { padding: 32px 24px; }
+    .form-row { grid-template-columns: 1fr; }
+    footer { flex-direction: column; gap: 16px; text-align: center; }
+  }
+
+  @media (max-width: 500px) {
+    .stats-bar { flex-direction: column; }
+    .stat { border-right: none; border-bottom: 1px solid #1e1e1e; }
+    .stat:last-child { border-bottom: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="logo">MOVE<span>FAST</span></div>
+  <nav>
+    <a href="#how">How It Works</a>
+    <a href="#pricing">Pricing</a>
+    <a href="#book" class="nav-cta">Book a Move</a>
+  </nav>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg-text">MOVE</div>
+  <div class="hero-content fade-up">
+    <div class="hero-eyebrow">Hawaii's On-Demand Moving Platform</div>
+    <h1>COMMUNITY<br>MOVES <span class="accent">FASTER</span></h1>
+    <p class="hero-sub">Connect with skilled local movers — pros, hustle-seekers, and community members ready to help. Priced by complexity. Paid same day.</p>
+    <div class="hero-actions">
+      <a href="#book" class="btn-primary">Book a Move</a>
+      <a href="#book" class="btn-secondary">Become a Mover</a>
+    </div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ticker-inner">
+    Studio Moves &nbsp;·&nbsp; 1-Bedroom Moves &nbsp;·&nbsp; Last-Minute Bookings &nbsp;·&nbsp; Same-Day Help &nbsp;·&nbsp; Junk Hauling Coming Soon &nbsp;·&nbsp; Hawaii's Moving Community &nbsp;·&nbsp; Get Paid for Your Strength &nbsp;·&nbsp;
+    Studio Moves &nbsp;·&nbsp; 1-Bedroom Moves &nbsp;·&nbsp; Last-Minute Bookings &nbsp;·&nbsp; Same-Day Help &nbsp;·&nbsp; Junk Hauling Coming Soon &nbsp;·&nbsp; Hawaii's Moving Community &nbsp;·&nbsp; Get Paid for Your Strength &nbsp;·&nbsp;
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="stats-bar">
+  <div class="stat fade-up">
+    <div class="stat-num">$80+</div>
+    <div class="stat-label">Starting Rate</div>
+  </div>
+  <div class="stat fade-up">
+    <div class="stat-num">2 HRS</div>
+    <div class="stat-label">Typical Booking Window</div>
+  </div>
+  <div class="stat fade-up">
+    <div class="stat-num">SAME DAY</div>
+    <div class="stat-label">Mover Payout</div>
+  </div>
+  <div class="stat fade-up">
+    <div class="stat-num">HAWAII</div>
+    <div class="stat-label">Community First</div>
+  </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<section class="how" id="how">
+  <div class="how-inner">
+    <div class="fade-up">
+      <div class="section-label">The Process</div>
+      <div class="section-title">HOW IT<br>WORKS</div>
+    </div>
+    <div class="how-grid">
+      <div class="how-card fade-up">
+        <div class="how-num">01</div>
+        <h3>Submit Your Move</h3>
+        <p>Tell us the details — date, size, floors, special items. Takes 90 seconds.</p>
+      </div>
+      <div class="how-card fade-up">
+        <div class="how-num">02</div>
+        <h3>Get Matched</h3>
+        <p>We connect you with an available mover from our community — verified, capable, ready.</p>
+      </div>
+      <div class="how-card fade-up">
+        <div class="how-num">03</div>
+        <h3>Confirm &amp; Pay</h3>
+        <p>Lock in your booking with a deposit. No surprises. Flat rate by move type.</p>
+      </div>
+      <div class="how-card fade-up">
+        <div class="how-num">04</div>
+        <h3>Move Day</h3>
+        <p>Your mover shows up, does the work. You tip if you love it. Mover gets paid same day.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing" id="pricing">
+  <div class="pricing-inner">
+    <div class="fade-up">
+      <div class="section-label">Transparent Rates</div>
+      <div class="section-title">SIMPLE<br>PRICING</div>
+    </div>
+    <div class="pricing-grid">
+      <div class="price-card fade-up">
+        <div class="price-type">Single Room / Studio</div>
+        <div class="price-range">$80–$150</div>
+        <div class="price-desc">Perfect for dorm or studio moves. 1–2 movers, no truck needed.</div>
+      </div>
+      <div class="price-card featured fade-up">
+        <div class="price-type">1-Bedroom Apartment</div>
+        <div class="price-range">$150–$300</div>
+        <div class="price-desc">Most popular. Includes furniture, boxes, and basic setup at destination.</div>
+      </div>
+      <div class="price-card fade-up">
+        <div class="price-type">2-Bedroom Apartment</div>
+        <div class="price-range">$300–$500</div>
+        <div class="price-desc">Bigger crew, longer window. Multi-floor and stairs negotiable.</div>
+      </div>
+      <div class="price-card fade-up">
+        <div class="price-type">Junk Haul — Coming Soon</div>
+        <div class="price-range">$75–$200</div>
+        <div class="price-desc">Single items, furniture removal, bulk cleanout. Launching summer 2026.</div>
+      </div>
+    </div>
+    <p style="margin-top:24px;font-family:var(--font-mono);font-size:0.65rem;color:#444;letter-spacing:0.1em;text-transform:uppercase;">Platform fee: 15–20% per job. Movers keep the rest.</p>
+  </div>
+</section>
+
+<!-- FORMS -->
+<section class="forms-section" id="book">
+  <div class="forms-inner">
+
+    <!-- CUSTOMER FORM -->
+    <div class="form-block fade-up">
+      <div class="form-header">
+        <span class="form-tag customer">I Need Help Moving</span>
+        <h2>BOOK A<br>MOVE</h2>
+        <p>Fill this out and we'll match you with the right mover. We'll confirm within a few hours.</p>
+      </div>
+
+      <form id="customerForm">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="c-name">Full Name</label>
+            <input type="text" id="c-name" placeholder="Your name" required />
+          </div>
+          <div class="form-group">
+            <label for="c-phone">Phone Number</label>
+            <input type="tel" id="c-phone" placeholder="(808) 555-0000" required />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="c-email">Email</label>
+          <input type="email" id="c-email" placeholder="you@email.com" required />
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="c-date">Move Date</label>
+            <input type="date" id="c-date" required />
+          </div>
+          <div class="form-group">
+            <label for="c-time">Preferred Start Time</label>
+            <select id="c-time">
+              <option value="">Select time</option>
+              <option>7:00 AM</option>
+              <option>8:00 AM</option>
+              <option>9:00 AM</option>
+              <option>10:00 AM</option>
+              <option>11:00 AM</option>
+              <option>12:00 PM</option>
+              <option>1:00 PM</option>
+              <option>2:00 PM</option>
+              <option>Flexible</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="c-type">Move Type</label>
+          <select id="c-type" required>
+            <option value="">Select move size</option>
+            <option>Single Room / Studio ($80–$150)</option>
+            <option>1-Bedroom Apartment ($150–$300)</option>
+            <option>2-Bedroom Apartment ($300–$500)</option>
+            <option>Other / Custom</option>
+          </select>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="c-from">Moving From (Area)</label>
+            <input type="text" id="c-from" placeholder="e.g. Kaimuki" required />
+          </div>
+          <div class="form-group">
+            <label for="c-to">Moving To (Area)</label>
+            <input type="text" id="c-to" placeholder="e.g. Manoa" required />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Special Considerations</label>
+          <div class="checkbox-group">
+            <label class="checkbox-label"><input type="checkbox" /> Stairs or no elevator</label>
+            <label class="checkbox-label"><input type="checkbox" /> Large/heavy furniture</label>
+            <label class="checkbox-label"><input type="checkbox" /> Need truck/vehicle help</label>
+            <label class="checkbox-label"><input type="checkbox" /> Tight deadline (same day)</label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="c-notes">Anything Else We Should Know?</label>
+          <textarea id="c-notes" placeholder="Describe your move..."></textarea>
+        </div>
+
+        <button type="submit" class="submit-btn">Submit Move Request →</button>
+      </form>
+
+      <div class="success-msg" id="customerSuccess">
+        <div class="success-icon">✓</div>
+        <h3>REQUEST RECEIVED</h3>
+        <p>We'll match you with a mover and reach out within a few hours to confirm. Check your phone.</p>
+      </div>
+    </div>
+
+    <!-- MOVER FORM -->
+    <div class="form-block mover-block fade-up">
+      <div class="form-header">
+        <span class="form-tag mover">I Want to Earn</span>
+        <h2>BECOME<br>A MOVER</h2>
+        <p>Pros, gym-goers, hustlers — if you've got strength and availability, we've got work. Get paid same day.</p>
+      </div>
+
+      <form id="moverForm">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="m-name">Full Name</label>
+            <input type="text" id="m-name" placeholder="Your name" required />
+          </div>
+          <div class="form-group">
+            <label for="m-phone">Phone Number</label>
+            <input type="tel" id="m-phone" placeholder="(808) 555-0000" required />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="m-email">Email</label>
+          <input type="email" id="m-email" placeholder="you@email.com" required />
+        </div>
+
+        <div class="form-group">
+          <label for="m-experience">Moving Experience</label>
+          <select id="m-experience" required>
+            <option value="">Select your experience level</option>
+            <option>Professional mover (paid work)</option>
+            <option>Helped friends/family move many times</option>
+            <option>No experience, but physically capable</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="m-availability">General Availability</label>
+          <select id="m-availability" required>
+            <option value="">When are you available?</option>
+            <option>Weekends only</option>
+            <option>Weekdays only</option>
+            <option>Weekdays + Weekends</option>
+            <option>Flexible / Call me when needed</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>What Can You Offer?</label>
+          <div class="checkbox-group">
+            <label class="checkbox-label"><input type="checkbox" /> I have a truck or van</label>
+            <label class="checkbox-label"><input type="checkbox" /> I have basic moving equipment (dollies, straps)</label>
+            <label class="checkbox-label"><input type="checkbox" /> I can handle stairs and heavy items</label>
+            <label class="checkbox-label"><input type="checkbox" /> I'm available last-minute</label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="m-venmo">Venmo or CashApp Handle</label>
+          <input type="text" id="m-venmo" placeholder="@yourhandle" required />
+        </div>
+
+        <div class="form-group">
+          <label for="m-notes">Anything Else?</label>
+          <textarea id="m-notes" placeholder="Tell us about yourself..."></textarea>
+        </div>
+
+        <button type="submit" class="submit-btn">Apply to Be a Mover →</button>
+      </form>
+
+      <div class="success-msg" id="moverSuccess">
+        <div class="success-icon">✓</div>
+        <h3>YOU'RE IN THE POOL</h3>
+        <p>We'll reach out when there's a job near you. Keep your phone close. First jobs coming soon.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div>
+    <div class="footer-logo">MOVE<span>FAST</span></div>
+    <div class="footer-sub">A Brownefield Holdings Platform</div>
+  </div>
+  <div style="text-align:right;">
+    <div class="footer-text">Hawaii · Community Moving</div>
+    <div class="footer-sub" style="color:#2a2a2a;">movefasthawaii.us · mvp v0.1 · soft launch 2026</div>
+  </div>
+</footer>
+
+<script>
+  // ─── SCROLL ANIMATIONS ───
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+  // ─── FORM SUBMISSIONS ───
+  const FORMSPREE_ENDPOINT = 'https://formspree.io/f/xykvklea';
+
+  function handleForm(formId, successId, formType) {
+    document.getElementById(formId).addEventListener('submit', async function(e) {
+      e.preventDefault();
+
+      const submitBtn = this.querySelector('.submit-btn');
+      const originalText = submitBtn.textContent;
+      submitBtn.textContent = 'Sending...';
+      submitBtn.disabled = true;
+
+      const formData = new FormData(this);
+      formData.append('_form_type', formType);
+      formData.append('_replyto', formData.get(formType === 'Customer Booking' ? 'c-email' : 'm-email') || '');
+      formData.append('_subject', `[MoveFast Hawaii] New ${formType} — ${new Date().toLocaleDateString('en-US', {timeZone: 'Pacific/Honolulu'})}`);
+
+      try {
+        const response = await fetch(FORMSPREE_ENDPOINT, {
+          method: 'POST',
+          body: formData,
+          headers: { 'Accept': 'application/json' }
+        });
+
+        if (response.ok) {
+          this.style.display = 'none';
+          document.getElementById(successId).classList.add('visible');
+        } else {
+          submitBtn.textContent = 'Error — Try Again';
+          submitBtn.disabled = false;
+        }
+      } catch (err) {
+        submitBtn.textContent = 'Error — Try Again';
+        submitBtn.disabled = false;
+        console.error('Formspree error:', err);
+      }
+    });
+  }
+
+  handleForm('customerForm', 'customerSuccess', 'Customer Booking');
+  handleForm('moverForm', 'moverSuccess', 'Mover Signup');
+
+  // ─── SET MIN DATE FOR BOOKING ───
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('c-date').setAttribute('min', today);
+</script>
+</body>
+</html>
